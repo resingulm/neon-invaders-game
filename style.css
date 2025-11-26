@@ -13,9 +13,11 @@
     padding: 0;
     user-select: none;
     -webkit-user-select: none;
-    /* Safari */
-    touch-action: none;
-    /* Prevent browser zooming/scrolling */
+    -moz-user-select: none;
+    -ms-user-select: none;
+    touch-action: manipulation;
+    /* Better iOS Safari support */
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -77,6 +79,7 @@ canvas {
     align-items: center;
     background: rgba(5, 5, 16, 0.85);
     backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;

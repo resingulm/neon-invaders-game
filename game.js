@@ -445,6 +445,9 @@ function loop(timestamp) {
 }
 
 function startGame() {
+    // Resume audio context for Safari/iOS
+    audio.resume();
+
     startScreen.classList.remove('active');
     gameOverScreen.classList.remove('active');
     initGame();
