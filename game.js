@@ -27,10 +27,31 @@ let isPaused = false;
 
 // Dimensions
 let width, height;
+let playerWidth = 40;
+let playerHeight = 30;
+let invaderSize = 30;
+let invaderPadding = 20;
 
-function resize() {
+function setDimensions() {
     width = canvas.width = canvas.parentElement.clientWidth;
     height = canvas.height = canvas.parentElement.clientHeight;
+
+    // Mobile Sizing
+    if (width < 600) {
+        playerWidth = 30;
+        playerHeight = 22;
+        invaderSize = 20;
+        invaderPadding = 10;
+    } else {
+        playerWidth = 40;
+        playerHeight = 30;
+        invaderSize = 30;
+        invaderPadding = 20;
+    }
+}
+
+function resize() {
+    setDimensions();
 
     // Update player position if it exists
     if (player) {
@@ -109,8 +130,8 @@ if (btnFire) {
 // Game Objects
 class Player {
     constructor() {
-        this.width = 40;
-        this.height = 30;
+        this.width = playerWidth;
+        this.height = playerHeight;
         this.x = width / 2 - this.width / 2;
         this.y = height - this.height - 20;
         this.speed = 500; // pixels per second
@@ -184,8 +205,8 @@ class Invader {
     constructor(x, y, type) {
         this.x = x;
         this.y = y;
-        this.width = 30;
-        this.height = 30;
+        this.width = invaderSize;
+        this.height = invaderSize;
         this.type = type;
         this.active = true;
         this.color = '#ff00ff';
@@ -273,21 +294,19 @@ function initGame() {
     // Create Invaders Grid
     const rows = 5;
     // Calculate columns based on width to fit screen
-    const invaderSize = 30;
-    const padding = 20;
-    const maxCols = Math.floor((width - 40) / (invaderSize + padding));
+    const maxCols = Math.floor((width - 40) / (invaderSize + invaderPadding));
     const cols = Math.min(8, maxCols); // Max 8, but fewer if screen is small
 
     // Center the grid
-    const gridWidth = cols * (invaderSize + padding) - padding;
+    const gridWidth = cols * (invaderSize + invaderPadding) - invaderPadding;
     const startX = (width - gridWidth) / 2;
     const startY = 50;
 
     for (let r = 0; r < rows; r++) {
         for (let c = 0; c < cols; c++) {
             invaders.push(new Invader(
-                startX + c * (invaderSize + padding),
-                startY + r * (invaderSize + padding),
+                startX + c * (invaderSize + invaderPadding),
+                startY + r * (invaderSize + invaderPadding),
                 r % 3
             ));
         }
