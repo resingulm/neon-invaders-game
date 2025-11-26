@@ -13,6 +13,11 @@ const finalScoreEl = document.getElementById('final-score');
 const startBtn = document.getElementById('start-btn');
 const restartBtn = document.getElementById('restart-btn');
 
+// Mobile Controls
+const btnLeft = document.getElementById('btn-left');
+const btnRight = document.getElementById('btn-right');
+const btnFire = document.getElementById('btn-fire');
+
 // Game State
 let gameLoopId;
 let lastTime = 0;
@@ -59,6 +64,47 @@ window.addEventListener('keyup', (e) => {
     if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.ArrowRight = false;
     if (e.code === 'Space') keys.Space = false;
 });
+
+// Touch Controls
+const handleTouchStart = (key) => (e) => {
+    e.preventDefault(); // Prevent default touch behavior
+    if (key === 'Space') {
+        keys.Space = true;
+        if (!isGameOver && !startScreen.classList.contains('active')) {
+            player.shoot();
+            audio.playShoot();
+        }
+    } else {
+        keys[key] = true;
+    }
+};
+
+const handleTouchEnd = (key) => (e) => {
+    e.preventDefault();
+    keys[key] = false;
+};
+
+// Add listeners to buttons
+if (btnLeft) {
+    btnLeft.addEventListener('touchstart', handleTouchStart('ArrowLeft'));
+    btnLeft.addEventListener('touchend', handleTouchEnd('ArrowLeft'));
+    btnLeft.addEventListener('mousedown', handleTouchStart('ArrowLeft')); // For testing on desktop
+    btnLeft.addEventListener('mouseup', handleTouchEnd('ArrowLeft'));
+}
+
+if (btnRight) {
+    btnRight.addEventListener('touchstart', handleTouchStart('ArrowRight'));
+    btnRight.addEventListener('touchend', handleTouchEnd('ArrowRight'));
+    btnRight.addEventListener('mousedown', handleTouchStart('ArrowRight'));
+    btnRight.addEventListener('mouseup', handleTouchEnd('ArrowRight'));
+}
+
+if (btnFire) {
+    btnFire.addEventListener('touchstart', handleTouchStart('Space'));
+    btnFire.addEventListener('touchend', handleTouchEnd('Space'));
+    btnFire.addEventListener('mousedown', handleTouchStart('Space'));
+    btnFire.addEventListener('mouseup', handleTouchEnd('Space'));
+}
 
 // Game Objects
 class Player {
@@ -226,9 +272,11 @@ function initGame() {
 
     // Create Invaders Grid
     const rows = 5;
-    const cols = 8; // Reduced columns to fit smaller screens better
+    // Calculate columns based on width to fit screen
     const invaderSize = 30;
     const padding = 20;
+    const maxCols = Math.floor((width - 40) / (invaderSize + padding));
+    const cols = Math.min(8, maxCols); // Max 8, but fewer if screen is small
 
     // Center the grid
     const gridWidth = cols * (invaderSize + padding) - padding;
